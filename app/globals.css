@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 22% 7%;
+    --foreground: 210 40% 96%;
+    --card: 222 24% 10%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 24% 10%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 184 92% 54%;
+    --primary-foreground: 222 47% 8%;
+    --secondary: 218 16% 16%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 218 16% 16%;
+    --muted-foreground: 216 14% 68%;
+    --accent: 172 76% 44%;
+    --accent-foreground: 222 47% 8%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 216 18% 18%;
+    --input: 216 18% 18%;
+    --ring: 184 92% 54%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.86), rgba(9, 13, 23, 0.82));
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(18px);
+  }
+
+  .grid-mask {
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 48% 10%, black, transparent 70%);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}

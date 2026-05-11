@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>OceanX AI - System Architecture & Workflow Document</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+  h1 { color: #0ea5e9; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; font-size: 2.2em; }
+  h2 { color: #0f172a; margin-top: 35px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+  h3 { color: #334155; margin-top: 25px; }
+  p, li { color: #475569; font-size: 1.05em; }
+  .highlight-box {
+    border-left: 4px solid #0ea5e9;
+    background-color: #f8fafc;
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin: 20px 0;
+  }
+  .highlight-box p { margin: 0; color: #334155; font-weight: 500; font-style: italic; }
+  .mermaid {
+    background-color: #f8fafc;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin: 25px 0;
+    text-align: center;
+  }
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .card h4 { margin-top: 0; color: #0ea5e9; font-size: 1.1em; }
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'default' });
+</script>
+</head>
+<body>
+
+<h1>OceanX AI: Multi-Agent System Architecture</h1>
+
+<div class="highlight-box">
+  <p>"Humans only do relationships + capital decisions. Agents run everything else."</p>
+</div>
+
+<h2>1. Executive Summary</h2>
+<p>This document serves as the formal architectural walkthrough for the <strong>OceanX AI Finance OS</strong> prototype. It details the multi-agent orchestration, the logic gates, and the autonomous continuity between underwriting and legal execution.</p>
+
+  <div style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">
+    <span style="background: #0ea5e9; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Next.js 14</span>
+    <span style="background: #6366f1; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Groq / Llama 3.3</span>
+    <span style="background: #38bdf8; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">TailwindCSS</span>
+    <span style="background: #f43f5e; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Framer Motion</span>
+    <span style="background: #3178c6; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">TypeScript</span>
+  </div>
+
+<ul>
+  <li><strong>Phase 1 (Step 3): Underwriting Agent</strong> — Extracts financial evidence, evaluates risk, and computes conditional credit limits based on OceanX policy rules.</li>
+  <li><strong>Phase 2 (Master Supervisor): Orchestration Agent</strong> — Acts as the central nervous system. Oversees the output of the Underwriter, flags logic errors (e.g., missing mathematical variables), and decides whether to route the workflow to a Human-in-the-Loop (HITL) or authorize the next agent.</li>
+  <li><strong>Phase 3 (Step 4): Contract Structuring Agent</strong> — Authorized by the Supervisor, this agent receives the approved payload and leverages AI text generation to translate structured risk mitigations into formalized legal "Conditions Precedent", culminating in a simulated DocuSign dispatch.</li>
+</ul>
+
+<h2>2. Agent Architecture Flow</h2>
+<p>The diagram below illustrates the end-to-end data pipeline, demonstrating how unstructured data is converted to structured JSON, evaluated, and then utilized to autonomously generate legal documentation.</p>
+
+<div class="mermaid">
+graph TD
+    classDef user fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
+    classDef agent fill:#0f172a,stroke:#10b981,stroke-width:2px,color:#fff
+    classDef logic fill:#334155,stroke:#94a3b8,stroke-width:1px,color:#fff
+    classDef output fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#fff
+    classDef mock fill:#1e293b,stroke:#6366f1,stroke-width:2px,color:#fff
+
+    A[User/Customer] -->|Submits Sandbox Integration Links| B
+    class A user
+
+    subgraph Agent 1: Underwriting System
+        B(Data Ingestion Router) -->|Scrapes Raw Content| C[Groq LLM: Llama 3]
+        C -->|Extracts Financial JSON Data| D{Underwriting Policy Engine}
+        D -->|Validates Policy Gates| E[Computes Method A & B Limits]
+        E -->|Generates JSON Payload| F((UnderwritingDecision JSON))
+    end
+    class B,C agent
+    class D,E logic
+    class F output
+
+    subgraph Master Supervisor Agent
+        F -->|Intercepts Output| M[Supervisor Logic Gate]
+        M -->|Flags Error / Missing Data| N[Route to Human-in-the-Loop]
+        M -->|Validates Math & Logic| O[Authorize Next Agent]
+    end
+    class M logic
+    class N user
+    class O logic
+
+    subgraph Agent 2: Contract Structuring System
+        O -->|Triggered on APPROVAL| G(Contract Generation Endpoint)
+        G -->|Injects Approved Variables| H[Contract LLM Template]
+        H -->|Generates Legal Markdown| I[Final Facility Agreement]
+    end
+    class G,H agent
+    class I output
+
+    I --> J{Mock API: Send via DocuSign}
+    J -->|Simulated Webhook Dispatch| K[Executed Agreement Ready]
+    class J,K mock
+</div>
+
+<h2>3. Data Pipeline & Logic Gates</h2>
+<p>The system operates in four distinct phases to ensure mathematical accuracy and data integrity before any contract is generated.</p>
+
+<div class="grid-container">
+  <div class="card">
+    <h4>Step 1: Ingestion &amp; Extraction</h4>
+    <p>Raw URLs are parsed to strip out HTML, leaving pure text. This unstructured text is sent to <strong>Groq (Llama 3.3)</strong> via a strictly defined JSON schema to extract required financial metrics (Revenue, Gross Margin, Average Daily Balance).</p>
+  </div>
+  <div class="card">
+    <h4>Step 2: Underwriting Mathematics</h4>
+    <p>Extracted variables are passed through strict, deterministic TypeScript logic gates representing OceanX's underwriting policy. Method A (10x ADB) and Method B (20% Revenue Cap) are calculated to output a firm credit recommendation.</p>
+  </div>
+  <div class="card">
+    <h4>Step 3: Master Supervisor Validation</h4>
+    <p>Before any legal document is drafted, the <strong>Master Supervisor Agent</strong> intercepts the JSON payload. It checks outputs for mathematical integrity and flags missing variables. If data is incomplete (<code>REQUEST INFO</code>), the Supervisor intelligently <strong>authorizes a Conditional Contract</strong> with TBD placeholders and specific "Conditions Precedent" clauses, while flagging the file for a Human-in-the-loop (HITL) for final verification. This ensures the workflow continues while maintaining absolute accuracy.</p>
+  </div>
+  <div class="card">
+    <h4>Step 4: Context-Aware Document Generation</h4>
+    <p>Authorized by the Supervisor, the Contract Agent acts as an autonomous legal desk. It intelligently adjusts the document type based on data completeness:
+    <ul>
+      <li><strong>Scenario A (Full Data):</strong> Generates a finalized <strong>Commercial Finance Facility Agreement</strong> ready for execution.</li>
+      <li><strong>Scenario B (Missing Data):</strong> Generates a <strong>Conditional Facility Offer & Information Request</strong> that explicitly flags missing variables and provides the customer with "Initiation Steps" to connect their live feeds.</li>
+    </ul>
+    This prevents transcription errors and ensures a professional customer experience even for complex edge cases.</p>
+  </div>
+</div>
+
+<h2>4. Evaluation Criteria Alignment & System Implications</h2>
+<ul>
+  <li><strong>Master Supervisor Implication (Quality Control):</strong> Implementing the Master Agent directly addresses the assignment's "Ideal Architecture" requirement. It acts as a sophisticated oversight layer: rather than simply halting on missing data, it <strong>authorizes conditional contract generation</strong> with embedded safeguards (TBD placeholders & specific legal requirements). This demonstrates "Practical Usefulness" by keeping the deal flow moving while ensuring that all missing private data is formally requested in the generated document.</li>
+  <li><strong>Clarity of Thinking:</strong> Complex back-office tasks are separated into highly specialized agent responsibilities (Financial extraction vs. Legal generation) to prevent hallucinations.</li>
+  <li><strong>Practical Usefulness:</strong> Completely eliminates the manual data entry bottleneck between credit approval and contract signing.</li>
+  <li><strong>Scalability:</strong> By standardizing the Underwriting output as a JSON payload, this architecture can be instantly scaled to trigger Step 5 (Operations Agent - CIN7/Xero creation) and Step 9 (Collections Agent - GoCardless mandates).</li>
+</ul>
+<h2>5. Technology Ecosystem & Rationale</h2>
+<p>The system was built using a high-performance stack designed for the speed and security required by trade finance operations.</p>
+<div class="grid-container" style="margin-top: 20px;">
+  <div class="card" style="border-left: 4px solid #0ea5e9;">
+    <h4 style="margin-bottom: 8px; color: #0ea5e9;">Next.js 14 (App Router)</h4>
+    <p>Selected for its high-performance server-side rendering and seamless API route handling, essential for complex agentic handoffs.</p>
+  </div>
+  <div class="card" style="border-left: 4px solid #6366f1;">
+    <h4 style="margin-bottom: 8px; color: #6366f1;">Groq &amp; Llama 3.3</h4>
+    <p>The "Decision Brain." We use Groq's low-latency inference to extract financial data from unstructured URLs in milliseconds.</p>
+  </div>
+  <div class="card" style="border-left: 4px solid #38bdf8;">
+    <h4 style="margin-bottom: 8px; color: #38bdf8;">TailwindCSS</h4>
+    <p>Used to craft a premium, "Stripe-class" dark-mode aesthetic that reflects the sophistication of OceanX AI.</p>
+  </div>
+  <div class="card" style="border-left: 4px solid #3178c6;">
+    <h4 style="margin-bottom: 8px; color: #3178c6;">TypeScript</h4>
+    <p>Ensures absolute mathematical integrity across the underwriting policy engine and agent communications.</p>
+  </div>
+  <div class="card" style="border-left: 4px solid #4ade80;">
+    <h4 style="margin-bottom: 8px; color: #4ade80;">Node.js / Next.js API</h4>
+    <p>The backend orchestration layer. Serverless API routes handle the secure communication between the UI and the agentic logic.</p>
+  </div>
+  <div class="card" style="border-left: 4px solid #facc15;">
+    <h4 style="margin-bottom: 8px; color: #facc15;">Autonomous Web Engine</h4>
+    <p>A custom-built data acquisition engine that parses raw HTML into structured text, feeding the LLM with clean evidence for decision-making.</p>
+  </div>
+</div>
+</body>
+</html>
